@@ -15,7 +15,7 @@ import org.hyperledger.fabric.contract.annotation.*
             name = "Trade Life Cycle",
             url = "http://gradle-kotlin.me"))
 )
-class CitiTradeContract: ContractInterface {
+class MyTradeContract: ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     fun executeTrade(context: Context, instruction: String) {
         println("instruction received: $instruction")

@@ -5,5 +5,5 @@ import org.hyperledger.fabric.contract.annotation.DataType
 import org.hyperledger.fabric.contract.annotation.Property
 
 @DataType
-class CitiTrade(@Property() val id: String, @Property() value: String) {
+class MyTrade(@Property() val id: String, @Property() value: String) {
 }
