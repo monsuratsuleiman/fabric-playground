@@ -1,9 +1,9 @@
-package playground.trade.lifecycle.chaincode
+package com.org.blockchain.trade.lifecycle.position
 
 import cdm.event.common.Trade
 import org.hyperledger.fabric.contract.annotation.DataType
 import org.hyperledger.fabric.contract.annotation.Property
 
 @DataType
-class MyTrade(@Property() val id: String, @Property() value: String) {
+class MyPosition(@Property() val id: String, @Property() value: String) {
 }
