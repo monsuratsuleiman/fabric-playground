@@ -1,4 +1,4 @@
-package com.org.preTrade.app
+package com.org.common
 
 import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric.gateway.X509Identity

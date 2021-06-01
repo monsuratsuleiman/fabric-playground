@@ -15,4 +15,10 @@ pluginManagement {
 }
 
 rootProject.name = "fabric-playground"
-include("svc-pre-trade-client", "svc-booking-entity", "chaincode-trade-lifecycle")
+include(
+    "svc-pre-trade-client",
+    "svc-booking-entity",
+    "chaincode-trade-lifecycle",
+    "common",
+    "chaincode-reference-data",
+    "svc-reference-data")

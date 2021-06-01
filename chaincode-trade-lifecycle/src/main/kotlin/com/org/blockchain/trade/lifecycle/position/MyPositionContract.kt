@@ -25,6 +25,7 @@ class MyPositionContract: ContractInterface {
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     fun executeTrade(context: Context, instruction: String): MyPosition {
         println("instruction received: $instruction")
+
         return MyPosition("xxxx", "1234")
     }
 }

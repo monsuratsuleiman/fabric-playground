@@ -1,4 +1,4 @@
-package com.org.preTrade.app
+package com.org.common
 
 import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric.gateway.Wallet
@@ -7,11 +7,13 @@ import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest
 
-class UserRegisterer(private val wallet: Wallet, private val hfcaClient: HFCAClient) {
+class UserRegisterer(private val wallet: Wallet, private val hfcaClient: HFCAClient,
+                     private val hyperledgerObjectFactory: HyperledgerObjectFactory,
+                     private val orgConfig: HyperledgerOrgConfig) {
     private val adminUser = "admin"
     private val appUsers = (0..0).map { "appUser_${it}" }
-    private val affiliation = "org1.department1"
-    private val mspId = "Org1MSP"
+    private val affiliation = orgConfig.affiliation
+    private val mspId = orgConfig.mspId
     private val admin: HyperledgerUser
     private val registeredAppUsers: List<HyperledgerUser>
 
@@ -25,23 +27,27 @@ class UserRegisterer(private val wallet: Wallet, private val hfcaClient: HFCACli
         get() = appUsers.first()
 
     private fun registerAppUser(userName: String): X509Identity {
-
         val userIdentity = wallet[userName] as? X509Identity
 
         if(userIdentity != null) return userIdentity
 
         val result = kotlin.runCatching {
             val registrationRequest = RegistrationRequest(userName, affiliation)
-            registrationRequest.type = "client"
-            val enrollmentSecret = hfcaClient.register(registrationRequest, admin)
-            println("======================> Successfully registered user${enrollmentSecret}")
+            registrationRequest.type = HFCAClient.HFCA_TYPE_CLIENT
 
-            val enrollment = HyperledgerObjectFactory().createCertificateAuthorityClient().enroll(userName, enrollmentSecret)
-//            val enrollment = hfcaClient.enroll(userName, enrollmentSecret, enrollmentRequestTLS)
-//            val enrollment = hfcaClient.enroll(userName, "dvYShgmDkKI")
+            val enrollmentSecret = hfcaClient.register(registrationRequest, admin)
+//            println("======================> Successfully registered user${enrollmentSecret}")
+
+            /**
+             * MS: For some reason we cannot enrol using the same HCAClient for registration
+             * and the HCAClient has to be created after registration completes
+            **/
+            val enrollHCAClient = hyperledgerObjectFactory.createCertificateAuthorityClient()
+            val enrollment = enrollHCAClient.enroll(userName, enrollmentSecret)
             val userIdentity = Identities.newX509Identity(mspId, enrollment)
             wallet.put(userName, userIdentity)
-            println("Successfully enrolled user \"$userName\" and imported it into the wallet")
+
+            println("Successfully enrolled user ${orgConfig.affiliation} \"$userName\" and imported it into the wallet")
             userIdentity
 
         }
@@ -57,7 +63,7 @@ class UserRegisterer(private val wallet: Wallet, private val hfcaClient: HFCACli
 
         val adminIdentity = wallet["admin"] as? X509Identity
         return if (adminIdentity != null) {
-            println("====================> An identity for the admin user \"admin\" already exists in the wallet")
+            println("====================> An identity for the admin user ${orgConfig.affiliation} \"admin\" already exists in the wallet")
             adminIdentity
         } else {
 
@@ -68,7 +74,7 @@ class UserRegisterer(private val wallet: Wallet, private val hfcaClient: HFCACli
             val enrollment = hfcaClient.enroll("admin", "adminpw", enrollmentRequestTLS)
             val userIdentity = Identities.newX509Identity(mspId, enrollment)
             wallet.put("admin", userIdentity)
-            println("====================> Successfully enrolled user \"admin\" and imported it into the wallet")
+            println("====================> Successfully enrolled user ${orgConfig.affiliation} \"admin\" and imported it into the wallet")
             userIdentity
         }
 

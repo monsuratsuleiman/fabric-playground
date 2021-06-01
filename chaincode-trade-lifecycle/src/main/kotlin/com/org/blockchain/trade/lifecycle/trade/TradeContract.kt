@@ -1,8 +1,6 @@
 package com.org.blockchain.trade.lifecycle.trade
 
-import cdm.event.common.ExecutionInstruction
 import cdm.event.common.Trade
-import com.org.blockchain.trade.lifecycle.common.IsdaCdmModule
 import org.hyperledger.fabric.contract.Context
 import org.hyperledger.fabric.contract.ContractInterface
 import org.hyperledger.fabric.contract.annotation.*
@@ -18,15 +16,14 @@ import org.hyperledger.fabric.shim.ChaincodeStub
             name = "The Owner",
             url = "http://gradle-kotlin.me"))
 )
-class MyTradeContract: ContractInterface {
-    override fun createContext(stub: ChaincodeStub): Context {
-        return MyTradeContext(stub)
-    }
+class TradeContract: ContractInterface {
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    fun executeTrade(context: Context, isdaCdmExecuteInstruction: String): MyTrade {
+    fun executeTrade(context: Context, isdaCdmExecuteInstruction: String): com.org.blockchain.trade.lifecycle.trade.Trade {
         ///val instruction = IsdaCdmModule.objectMapper.readValue(isdaCdmExecuteInstruction, ExecutionInstruction::class.java)
         println("instruction received: ooooo")
-        return MyTrade(Trade.builder().build())
+        val myTrade = Trade(Trade.builder().build())
+        context.stub.setEvent("Execute", "12233".toByteArray(Charsets.UTF_8))
+        return myTrade
     }
 }

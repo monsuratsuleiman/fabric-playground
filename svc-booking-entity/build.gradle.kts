@@ -3,4 +3,21 @@
  */
 
 plugins {
+    application
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+application {
+    mainClassName = "com.org.booking.entity.BookingApp"
+}
+
+dependencies {
+
+    implementation(project(":common"))
+    implementation("com.google.guava:guava:29.0-jre")
+    implementation("com.isda:cdm:2.108.1")
+    implementation("org.hyperledger.fabric:fabric-gateway-java:2.1.1")
 }

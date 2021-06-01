@@ -1,4 +1,4 @@
-package com.org.preTrade.app
+package com.org.common
 
 import org.hyperledger.fabric.gateway.Wallet
 import org.hyperledger.fabric.gateway.Wallets
@@ -7,13 +7,12 @@ import org.hyperledger.fabric_ca.sdk.HFCAClient
 import java.nio.file.Paths
 import java.util.*
 
-class HyperledgerObjectFactory {
+class HyperledgerObjectFactory(private val orgConfig: HyperledgerOrgConfig) {
     fun createCertificateAuthorityClient(): HFCAClient {
         val props = Properties()
-        props["pemFile"] =
-            "../../fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
+        props["pemFile"] = orgConfig.pemFilePath
         props["allowAllHostNames"] = "true"
-        val caClient = HFCAClient.createNewInstance("https://localhost:7054", props)
+        val caClient = HFCAClient.createNewInstance(orgConfig.certificateAuthorityUrl, props)
         val cryptoSuite = CryptoSuiteFactory.getDefault().cryptoSuite
         caClient.cryptoSuite = cryptoSuite
         return caClient
@@ -21,6 +20,6 @@ class HyperledgerObjectFactory {
 
     fun createFileWallet(): Wallet {
         // Create a wallet for managing identities
-        return Wallets.newFileSystemWallet(Paths.get("wallet"))
+        return Wallets.newFileSystemWallet(Paths.get(orgConfig.walletPath))
     }
 }

@@ -11,7 +11,7 @@ java {
 }
 
 application {
-    mainClassName = "com.org.preTrade.app.PreTradeApp"
+    mainClassName = "com.org.reference.data.ReferenceDataApp"
 }
 dependencies {
 
