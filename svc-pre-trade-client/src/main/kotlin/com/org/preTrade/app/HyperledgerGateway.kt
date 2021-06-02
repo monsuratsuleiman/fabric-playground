@@ -5,6 +5,7 @@ import com.org.common.HyperledgerOrgConfig
 import org.hyperledger.fabric.gateway.Gateway
 import org.hyperledger.fabric.gateway.Network
 import org.hyperledger.fabric.gateway.Wallet
+import org.hyperledger.fabric.sdk.Peer
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 import java.nio.file.Path
 import java.nio.file.Paths
